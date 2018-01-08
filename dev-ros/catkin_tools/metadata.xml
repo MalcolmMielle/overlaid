@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <longdescription>
+    catkin tools
+  </longdescription>
+  <maintainer type="person">
+    <email>malcolm.mielle@protonmail.com</email>
+    <name>Malcolm Mielle</name>
+  </maintainer>
+  <upstream>
+    <maintainer status="active">
+      <email>h@h.com</email>
+      <name>h h</name>
+    </maintainer>
+  </upstream>
+</pkgmetadata>

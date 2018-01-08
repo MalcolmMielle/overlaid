@@ -1,0 +1,2088 @@
+diff --git a/tests/README.md b/tests/README.md
+deleted file mode 100644
+index af24a4b..0000000
+--- a/tests/README.md
++++ /dev/null
+@@ -1,50 +0,0 @@
+-Testing
+-=======
+-
+-The `catkin_tools` test harness includes the following types of tests,
+-organized into different directories:
+-
+-* **unit** -- API tests for the `catkin_tools` python interface
+-* **system** -- Tests which not only test integrated parts of `catkin_tools`
+-  but the interaction with other, external projects like catkin_pkg and catkin.
+-
+-## Running Tests
+-
+-All tests can be run from the root of the repository.
+-
+-First, make sure the required test dependencies are installed:
+-
+-*Ubuntu* -- `sudo apt-get install cmake libgtest-dev build-essential python-setuptools python-pip`
+-
+-*OS X* -- `pip install setuptools`
+-
+-*Both Platforms*
+-
+-```
+-pip install argparse catkin-pkg distribute PyYAML psutil
+-pip install nose coverage flake8 mock trollius empy --upgrade
+-pip install git+https://github.com/osrf/osrf_pycommon.git
+-```
+-
+-Second, build the Catkin CMake tool:
+-
+-```
+-git clone https://github.com/ros/catkin.git /tmp/catkin_source -b indigo-devel --depth 1
+-mkdir /tmp/catkin_source/build
+-pushd /tmp/catkin_source/build
+-cmake .. && make
+-source devel/setup.bash
+-popd
+-```
+-
+-Finally, install `catkin_tools`:
+-
+-```
+-python setup.py develop
+-```
+-
+-To run all tests and view the output, run the following from the repository root:
+-
+-```
+-python setup.py nosetests -s
+-```
+diff --git a/tests/__init__.py b/tests/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/__init__.py b/tests/system/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/resources/catkin_pkgs/cmake_args/CMakeLists.txt b/tests/system/resources/catkin_pkgs/cmake_args/CMakeLists.txt
+deleted file mode 100644
+index e6212dd..0000000
+--- a/tests/system/resources/catkin_pkgs/cmake_args/CMakeLists.txt
++++ /dev/null
+@@ -1,19 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(cmake_args)
+-
+-find_package(catkin REQUIRED)
+-
+-catkin_package()
+-
+-if(NOT VAR1)
+-  message(SEND_ERROR "VAR1 NOT DEFINED!")
+-endif()
+-
+-if(NOT VAR2)
+-  message(SEND_ERROR "VAR2 NOT DEFINED!")
+-endif()
+-
+-if(NOT VAR3)
+-  message(SEND_ERROR "VAR3 NOT DEFINED!")
+-endif()
+-
+diff --git a/tests/system/resources/catkin_pkgs/cmake_args/package.xml b/tests/system/resources/catkin_pkgs/cmake_args/package.xml
+deleted file mode 100644
+index b62e0f7..0000000
+--- a/tests/system/resources/catkin_pkgs/cmake_args/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>cmake_args</name>
+-  <version>0.1.0</version>
+-  <description>This package fails unless three CMake arguments are set.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>BSD</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/cmake_err/CMakeLists.txt b/tests/system/resources/catkin_pkgs/cmake_err/CMakeLists.txt
+deleted file mode 100644
+index 9096278..0000000
+--- a/tests/system/resources/catkin_pkgs/cmake_err/CMakeLists.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(cmake_err)
+-find_package(catkin REQUIRED)
+-catkin_package()
+-message(SEND_ERROR "This package sends an error from cmake.")
+diff --git a/tests/system/resources/catkin_pkgs/cmake_err/package.xml b/tests/system/resources/catkin_pkgs/cmake_err/package.xml
+deleted file mode 100644
+index 9dfc69a..0000000
+--- a/tests/system/resources/catkin_pkgs/cmake_err/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>cmake_err</name>
+-  <version>0.1.0</version>
+-  <description>This package produces a CMake error when configuring.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>BSD</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/cmake_warning/CMakeLists.txt b/tests/system/resources/catkin_pkgs/cmake_warning/CMakeLists.txt
+deleted file mode 100644
+index 9a49c50..0000000
+--- a/tests/system/resources/catkin_pkgs/cmake_warning/CMakeLists.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(cmake_warning)
+-find_package(catkin REQUIRED)
+-catkin_package()
+-message(WARNING "This sends a warning from cmake.")
+diff --git a/tests/system/resources/catkin_pkgs/cmake_warning/package.xml b/tests/system/resources/catkin_pkgs/cmake_warning/package.xml
+deleted file mode 100644
+index 082c701..0000000
+--- a/tests/system/resources/catkin_pkgs/cmake_warning/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>cmake_warning</name>
+-  <version>0.1.0</version>
+-  <description>This package produces a warning when configuring CMake.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>TODO</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/make_err/CMakeLists.txt b/tests/system/resources/catkin_pkgs/make_err/CMakeLists.txt
+deleted file mode 100644
+index 9bbb128..0000000
+--- a/tests/system/resources/catkin_pkgs/make_err/CMakeLists.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(make_err)
+-find_package(catkin REQUIRED)
+-catkin_package()
+-add_executable(fail fail.cpp)
+diff --git a/tests/system/resources/catkin_pkgs/make_err/fail.cpp b/tests/system/resources/catkin_pkgs/make_err/fail.cpp
+deleted file mode 100644
+index 94fbbc0..0000000
+--- a/tests/system/resources/catkin_pkgs/make_err/fail.cpp
++++ /dev/null
+@@ -1 +0,0 @@
+-#error This sends an error from make
+diff --git a/tests/system/resources/catkin_pkgs/make_err/package.xml b/tests/system/resources/catkin_pkgs/make_err/package.xml
+deleted file mode 100644
+index 337a257..0000000
+--- a/tests/system/resources/catkin_pkgs/make_err/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>make_err</name>
+-  <version>0.0.0</version>
+-  <description>This package produces a make error when building.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>BSD</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/make_warning/CMakeLists.txt b/tests/system/resources/catkin_pkgs/make_warning/CMakeLists.txt
+deleted file mode 100644
+index 5bd8341..0000000
+--- a/tests/system/resources/catkin_pkgs/make_warning/CMakeLists.txt
++++ /dev/null
+@@ -1,5 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(make_warning)
+-find_package(catkin REQUIRED)
+-catkin_package()
+-add_library(warn warn.cpp)
+diff --git a/tests/system/resources/catkin_pkgs/make_warning/package.xml b/tests/system/resources/catkin_pkgs/make_warning/package.xml
+deleted file mode 100644
+index 855a55e..0000000
+--- a/tests/system/resources/catkin_pkgs/make_warning/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>make_warning</name>
+-  <version>0.1.0</version>
+-  <description>This package generats a warning in the make stage.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>BSD</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/make_warning/warn.cpp b/tests/system/resources/catkin_pkgs/make_warning/warn.cpp
+deleted file mode 100644
+index fbdecd2..0000000
+--- a/tests/system/resources/catkin_pkgs/make_warning/warn.cpp
++++ /dev/null
+@@ -1 +0,0 @@
+-#warning This sends a warning from make
+diff --git a/tests/system/resources/catkin_pkgs/products_0/CMakeLists.txt b/tests/system/resources/catkin_pkgs/products_0/CMakeLists.txt
+deleted file mode 100644
+index 7a4d477..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/CMakeLists.txt
++++ /dev/null
+@@ -1,22 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(products_0)
+-find_package(catkin REQUIRED)
+-
+-catkin_package(
+-  INCLUDE_DIRS include
+-  LIBRARIES ${PROJECT_NAME}_lib
+-  CFG_EXTRAS extras.cmake)
+-
+-include_directories(include)
+-
+-add_library(${PROJECT_NAME}_lib lib.cpp)
+-target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
+-
+-add_executable(main main.cpp)
+-target_link_libraries(main ${PROJECT_NAME}_lib ${catkin_LIBRARIES})
+-
+-install(TARGETS ${PROJECT_NAME}_lib main
+-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+-  )
+diff --git a/tests/system/resources/catkin_pkgs/products_0/cmake/extras.cmake.develspace.in b/tests/system/resources/catkin_pkgs/products_0/cmake/extras.cmake.develspace.in
+deleted file mode 100644
+index 6ef9273..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/cmake/extras.cmake.develspace.in
++++ /dev/null
+@@ -1 +0,0 @@
+-set($ENV{PRODUCTS_0} "devel")
+diff --git a/tests/system/resources/catkin_pkgs/products_0/cmake/extras.cmake.installspace.in b/tests/system/resources/catkin_pkgs/products_0/cmake/extras.cmake.installspace.in
+deleted file mode 100644
+index 6bf9881..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/cmake/extras.cmake.installspace.in
++++ /dev/null
+@@ -1 +0,0 @@
+-set($ENV{PRODUCTS_0} "install")
+diff --git a/tests/system/resources/catkin_pkgs/products_0/include/make_products_0/fun.h b/tests/system/resources/catkin_pkgs/products_0/include/make_products_0/fun.h
+deleted file mode 100644
+index dd5dcb9..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/include/make_products_0/fun.h
++++ /dev/null
+@@ -1,3 +0,0 @@
+-namespace make_products_0 {
+-  int fun();
+-}
+diff --git a/tests/system/resources/catkin_pkgs/products_0/lib.cpp b/tests/system/resources/catkin_pkgs/products_0/lib.cpp
+deleted file mode 100644
+index 6911b46..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/lib.cpp
++++ /dev/null
+@@ -1,4 +0,0 @@
+-#include <make_products_0/fun.h>
+-int make_products_0::fun() {
+-  return 0;
+-}
+diff --git a/tests/system/resources/catkin_pkgs/products_0/main.cpp b/tests/system/resources/catkin_pkgs/products_0/main.cpp
+deleted file mode 100644
+index e9345a3..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/main.cpp
++++ /dev/null
+@@ -1,6 +0,0 @@
+-
+-#include <make_products_0/fun.h>
+-
+-int main(int argc, char** argv) {
+-  return make_products_0::fun();
+-}
+diff --git a/tests/system/resources/catkin_pkgs/products_0/package.xml b/tests/system/resources/catkin_pkgs/products_0/package.xml
+deleted file mode 100644
+index a1e45de..0000000
+--- a/tests/system/resources/catkin_pkgs/products_0/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>products_0</name>
+-  <version>0.1.0</version>
+-  <description>This package generates products in the make stage.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>BSD</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/CMakeLists.txt b/tests/system/resources/catkin_pkgs/products_unicode/CMakeLists.txt
+deleted file mode 100644
+index bc420ea..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/CMakeLists.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(products_unicode)
+-find_package(catkin REQUIRED)
+-
+-catkin_package(
+-  INCLUDE_DIRS include
+-  LIBRARIES ${PROJECT_NAME}_lib
+-  CFG_EXTRAS extras.cmake)
+-
+-include_directories(include)
+-
+-add_library(${PROJECT_NAME}_lib lib.cpp)
+-set_target_properties(${PROJECT_NAME}_lib PROPERTIES OUTPUT_NAME "${PROJECT_NAME}_lïb")
+-target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
+-
+-add_executable(main main.cpp)
+-set_target_properties(main PROPERTIES OUTPUT_NAME "maïn")
+-target_link_libraries(main ${PROJECT_NAME}_lib ${catkin_LIBRARIES})
+-
+-install(TARGETS ${PROJECT_NAME}_lib main
+-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+-  )
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/cmake/extras.cmake.develspace.in b/tests/system/resources/catkin_pkgs/products_unicode/cmake/extras.cmake.develspace.in
+deleted file mode 100644
+index 21ac7ca..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/cmake/extras.cmake.develspace.in
++++ /dev/null
+@@ -1 +0,0 @@
+-set($ENV{PRODUCTS_UNICODE} "devel")
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/cmake/extras.cmake.installspace.in b/tests/system/resources/catkin_pkgs/products_unicode/cmake/extras.cmake.installspace.in
+deleted file mode 100644
+index 23cfeae..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/cmake/extras.cmake.installspace.in
++++ /dev/null
+@@ -1 +0,0 @@
+-set($ENV{PRODUCTS_UNICODE} "install")
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/include/make_products_0/fun.h b/tests/system/resources/catkin_pkgs/products_unicode/include/make_products_0/fun.h
+deleted file mode 100644
+index dd5dcb9..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/include/make_products_0/fun.h
++++ /dev/null
+@@ -1,3 +0,0 @@
+-namespace make_products_0 {
+-  int fun();
+-}
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/lib.cpp b/tests/system/resources/catkin_pkgs/products_unicode/lib.cpp
+deleted file mode 100644
+index 6911b46..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/lib.cpp
++++ /dev/null
+@@ -1,4 +0,0 @@
+-#include <make_products_0/fun.h>
+-int make_products_0::fun() {
+-  return 0;
+-}
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/main.cpp b/tests/system/resources/catkin_pkgs/products_unicode/main.cpp
+deleted file mode 100644
+index e9345a3..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/main.cpp
++++ /dev/null
+@@ -1,6 +0,0 @@
+-
+-#include <make_products_0/fun.h>
+-
+-int main(int argc, char** argv) {
+-  return make_products_0::fun();
+-}
+diff --git a/tests/system/resources/catkin_pkgs/products_unicode/package.xml b/tests/system/resources/catkin_pkgs/products_unicode/package.xml
+deleted file mode 100644
+index 078566e..0000000
+--- a/tests/system/resources/catkin_pkgs/products_unicode/package.xml
++++ /dev/null
+@@ -1,9 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>products_unicode</name>
+-  <version>0.1.0</version>
+-  <description>This package generates products in the make stage.</description>
+-  <maintainer email="todo@todo.todo">todo</maintainer>
+-  <license>BSD</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-</package>
+diff --git a/tests/system/resources/catkin_pkgs/python_tests/CMakeLists.txt b/tests/system/resources/catkin_pkgs/python_tests/CMakeLists.txt
+deleted file mode 100644
+index c884bab..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests/CMakeLists.txt
++++ /dev/null
+@@ -1,9 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(python_tests)
+-find_package(catkin REQUIRED)
+-
+-catkin_package()
+-
+-if(CATKIN_ENABLE_TESTING)
+-  catkin_add_nosetests(test_good.py)
+-endif()
+diff --git a/tests/system/resources/catkin_pkgs/python_tests/package.xml b/tests/system/resources/catkin_pkgs/python_tests/package.xml
+deleted file mode 100644
+index 144a328..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests/package.xml
++++ /dev/null
+@@ -1,11 +0,0 @@
+-<package>
+-  <name>python_tests</name>
+-  <version>0.1.0</version>
+-  <license>BSD</license>
+-  <maintainer email="todo@todo.com">todo</maintainer>
+-  <description>This package contains a python test.</description>
+-
+-  <buildtool_depend>catkin</buildtool_depend>
+-  <test_depend>unittest</test_depend>
+-</package>
+-
+diff --git a/tests/system/resources/catkin_pkgs/python_tests/setup.py b/tests/system/resources/catkin_pkgs/python_tests/setup.py
+deleted file mode 100644
+index fb1311c..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests/setup.py
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/usr/bin/env python
+-from distutils.core import setup
+-from catkin_pkg.python_setup import generate_distutils_setup
+-
+-d = generate_distutils_setup()
+-setup(**d)
+diff --git a/tests/system/resources/catkin_pkgs/python_tests/test_good.py b/tests/system/resources/catkin_pkgs/python_tests/test_good.py
+deleted file mode 100644
+index 0ae625a..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests/test_good.py
++++ /dev/null
+@@ -1,12 +0,0 @@
+-#!/usr/bin/env python
+-
+-import unittest
+-
+-
+-class TestGood(unittest.TestCase):
+-
+-    def test_zero(self):
+-        self.assertEqual(0, 0)
+-
+-if __name__ == '__main__':
+-    unittest.main()
+diff --git a/tests/system/resources/catkin_pkgs/python_tests_err/CMakeLists.txt b/tests/system/resources/catkin_pkgs/python_tests_err/CMakeLists.txt
+deleted file mode 100644
+index 4eac722..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests_err/CMakeLists.txt
++++ /dev/null
+@@ -1,9 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(python_tests_err)
+-find_package(catkin REQUIRED)
+-
+-catkin_package()
+-
+-if (CATKIN_ENABLE_TESTING)
+-  catkin_add_nosetests(test_bad.py)
+-endif()
+diff --git a/tests/system/resources/catkin_pkgs/python_tests_err/package.xml b/tests/system/resources/catkin_pkgs/python_tests_err/package.xml
+deleted file mode 100644
+index aee9ed2..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests_err/package.xml
++++ /dev/null
+@@ -1,11 +0,0 @@
+-<package>
+-  <name>python_tests_err</name>
+-  <version>0.1.0</version>
+-  <license>BSD</license>
+-  <maintainer email="todo@todo.com">todo</maintainer>
+-  <description>This package contains a unit test that should fail when run.</description>
+-
+-  <buildtool_depend>catkin</buildtool_depend>
+-  <test_depend>unittest</test_depend>
+-</package>
+-
+diff --git a/tests/system/resources/catkin_pkgs/python_tests_err/setup.py b/tests/system/resources/catkin_pkgs/python_tests_err/setup.py
+deleted file mode 100644
+index fb1311c..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests_err/setup.py
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#!/usr/bin/env python
+-from distutils.core import setup
+-from catkin_pkg.python_setup import generate_distutils_setup
+-
+-d = generate_distutils_setup()
+-setup(**d)
+diff --git a/tests/system/resources/catkin_pkgs/python_tests_err/test_bad.py b/tests/system/resources/catkin_pkgs/python_tests_err/test_bad.py
+deleted file mode 100644
+index f46637e..0000000
+--- a/tests/system/resources/catkin_pkgs/python_tests_err/test_bad.py
++++ /dev/null
+@@ -1,12 +0,0 @@
+-#!/usr/bin/env python
+-
+-import unittest
+-
+-
+-class TestBad(unittest.TestCase):
+-
+-    def test_zero(self):
+-        self.assertEqual(0, 1)
+-
+-if __name__ == '__main__':
+-    unittest.main()
+diff --git a/tests/system/resources/cmake_pkgs/app_pkg/CMakeLists.txt b/tests/system/resources/cmake_pkgs/app_pkg/CMakeLists.txt
+deleted file mode 100644
+index e7a0a61..0000000
+--- a/tests/system/resources/cmake_pkgs/app_pkg/CMakeLists.txt
++++ /dev/null
+@@ -1,12 +0,0 @@
+-cmake_minimum_required (VERSION 2.6)
+-project(app_pkg)
+-
+-add_executable(vanilla_app vanilla.cpp)
+-find_library(LIBVANILLA vanilla)
+-target_link_libraries(vanilla_app ${LIBVANILLA})
+-
+-install(TARGETS vanilla_app
+-  RUNTIME DESTINATION bin
+-  LIBRARY DESTINATION lib
+-  ARCHIVE DESTINATION lib/static)
+-
+diff --git a/tests/system/resources/cmake_pkgs/app_pkg/package.xml b/tests/system/resources/cmake_pkgs/app_pkg/package.xml
+deleted file mode 100644
+index 3f2d895..0000000
+--- a/tests/system/resources/cmake_pkgs/app_pkg/package.xml
++++ /dev/null
+@@ -1,11 +0,0 @@
+-<package>
+-  <name>app_pkg</name>
+-  <description>vanilla CMake</description>
+-  <version>0.1.0</version>
+-  <license>BSD</license>
+-  <maintainer email="jbo@jhu.edu">jbo</maintainer>
+-  <build_depend>lib_pkg</build_depend>
+-  <export>
+-    <build_type>cmake</build_type>
+-  </export>
+-</package>
+diff --git a/tests/system/resources/cmake_pkgs/app_pkg/vanilla.cpp b/tests/system/resources/cmake_pkgs/app_pkg/vanilla.cpp
+deleted file mode 100644
+index a642a49..0000000
+--- a/tests/system/resources/cmake_pkgs/app_pkg/vanilla.cpp
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#include <iostream>
+-
+-#include <vanilla.h>
+-
+-int main(int argc, char **argv) {
+-  vanilla();
+-  return 0;
+-}
+diff --git a/tests/system/resources/cmake_pkgs/cmake_pkg/CMakeLists.txt b/tests/system/resources/cmake_pkgs/cmake_pkg/CMakeLists.txt
+deleted file mode 100644
+index a258206..0000000
+--- a/tests/system/resources/cmake_pkgs/cmake_pkg/CMakeLists.txt
++++ /dev/null
+@@ -1,10 +0,0 @@
+-cmake_minimum_required (VERSION 2.6)
+-project(cmake_pkg)
+-
+-add_executable(vanilla vanilla.cpp)
+-
+-install(TARGETS vanilla
+-  RUNTIME DESTINATION bin
+-  LIBRARY DESTINATION lib
+-  ARCHIVE DESTINATION lib/static)
+-
+diff --git a/tests/system/resources/cmake_pkgs/cmake_pkg/package.xml b/tests/system/resources/cmake_pkgs/cmake_pkg/package.xml
+deleted file mode 100644
+index 059ea87..0000000
+--- a/tests/system/resources/cmake_pkgs/cmake_pkg/package.xml
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<package>
+-  <name>cmake_pkg</name>
+-  <description>vanilla CMake</description>
+-  <version>0.1.0</version>
+-  <license>BSD</license>
+-  <maintainer email="jbo@jhu.edu">jbo</maintainer>
+-  <export>
+-    <build_type>cmake</build_type>
+-  </export>
+-</package>
+diff --git a/tests/system/resources/cmake_pkgs/cmake_pkg/vanilla.cpp b/tests/system/resources/cmake_pkgs/cmake_pkg/vanilla.cpp
+deleted file mode 100644
+index a2011db..0000000
+--- a/tests/system/resources/cmake_pkgs/cmake_pkg/vanilla.cpp
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#include <iostream>
+-
+-int main(int argc, char **argv) {
+-
+-  return 0;
+-}
+diff --git a/tests/system/resources/cmake_pkgs/lib_pkg/CMakeLists.txt b/tests/system/resources/cmake_pkgs/lib_pkg/CMakeLists.txt
+deleted file mode 100644
+index 51a8ede..0000000
+--- a/tests/system/resources/cmake_pkgs/lib_pkg/CMakeLists.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-cmake_minimum_required (VERSION 2.6)
+-project(lib_pkg)
+-
+-include_directories(${CMAKE_SOURCE_DIR})
+-add_library(vanilla SHARED vanilla.cpp)
+-
+-INSTALL(FILES vanilla.h
+-  DESTINATION include
+-  )
+-
+-install(TARGETS vanilla
+-  RUNTIME DESTINATION bin
+-  LIBRARY DESTINATION lib
+-  ARCHIVE DESTINATION lib)
+-
+diff --git a/tests/system/resources/cmake_pkgs/lib_pkg/package.xml b/tests/system/resources/cmake_pkgs/lib_pkg/package.xml
+deleted file mode 100644
+index 88ffb37..0000000
+--- a/tests/system/resources/cmake_pkgs/lib_pkg/package.xml
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<package>
+-  <name>lib_pkg</name>
+-  <description>vanilla CMake</description>
+-  <version>0.1.0</version>
+-  <license>BSD</license>
+-  <maintainer email="jbo@jhu.edu">jbo</maintainer>
+-  <export>
+-    <build_type>cmake</build_type>
+-  </export>
+-</package>
+diff --git a/tests/system/resources/cmake_pkgs/lib_pkg/vanilla.cpp b/tests/system/resources/cmake_pkgs/lib_pkg/vanilla.cpp
+deleted file mode 100644
+index 62b9b17..0000000
+--- a/tests/system/resources/cmake_pkgs/lib_pkg/vanilla.cpp
++++ /dev/null
+@@ -1,6 +0,0 @@
+-#include <iostream>
+-#include <vanilla.h>
+-
+-void vanilla() {
+-  std::cerr<<"vanilla."<<std::endl;
+-}
+diff --git a/tests/system/resources/cmake_pkgs/lib_pkg/vanilla.h b/tests/system/resources/cmake_pkgs/lib_pkg/vanilla.h
+deleted file mode 100644
+index 8788b79..0000000
+--- a/tests/system/resources/cmake_pkgs/lib_pkg/vanilla.h
++++ /dev/null
+@@ -1,2 +0,0 @@
+-
+-void vanilla();
+diff --git a/tests/system/resources/ros_pkgs/pkg_with_roslint/CMakeLists.txt b/tests/system/resources/ros_pkgs/pkg_with_roslint/CMakeLists.txt
+deleted file mode 100644
+index b5b6abf..0000000
+--- a/tests/system/resources/ros_pkgs/pkg_with_roslint/CMakeLists.txt
++++ /dev/null
+@@ -1,7 +0,0 @@
+-cmake_minimum_required(VERSION 2.8.3)
+-project(pkg_with_roslint)
+-find_package(catkin REQUIRED COMPONENTS roslint)
+-catkin_package()
+-
+-roslint_cpp(main.cpp)
+-roslint_add_test()
+diff --git a/tests/system/resources/ros_pkgs/pkg_with_roslint/main.cpp b/tests/system/resources/ros_pkgs/pkg_with_roslint/main.cpp
+deleted file mode 100644
+index d4951f5..0000000
+--- a/tests/system/resources/ros_pkgs/pkg_with_roslint/main.cpp
++++ /dev/null
+@@ -1,4 +0,0 @@
+-
+-int main(int argc, char** argv) {
+-  return 0;
+-}
+diff --git a/tests/system/resources/ros_pkgs/pkg_with_roslint/package.xml b/tests/system/resources/ros_pkgs/pkg_with_roslint/package.xml
+deleted file mode 100644
+index 0b62fa3..0000000
+--- a/tests/system/resources/ros_pkgs/pkg_with_roslint/package.xml
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<?xml version="1.0"?>
+-<package>
+-  <name>pkg_with_roslint</name>
+-  <version>0.0.0</version>
+-  <description>The catkin_pkg_roslint package</description>
+-  <maintainer email="jbohren@todo.todo">jbohren</maintainer>
+-  <license>TODO</license>
+-  <buildtool_depend>catkin</buildtool_depend>
+-  <build_depend>roslint</build_depend>
+-</package>
+diff --git a/tests/system/verbs/__init__.py b/tests/system/verbs/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/verbs/catkin_build/__init__.py b/tests/system/verbs/catkin_build/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/verbs/catkin_build/test_args.py b/tests/system/verbs/catkin_build/test_args.py
+deleted file mode 100644
+index 2762728..0000000
+--- a/tests/system/verbs/catkin_build/test_args.py
++++ /dev/null
+@@ -1,87 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-import shutil
+-
+-from ...workspace_factory import workspace_factory
+-
+-from ....utils import catkin_success
+-from ....utils import catkin_failure
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-BUILD = ['build', '--no-notify', '--no-status']
+-CLEAN = ['clean', '--all', '--yes']  # , '--no-notify', '--no-color', '--no-status']
+-
+-
+-def test_cmake_args():
+-    """Test passing CMake args to packages."""
+-    with workspace_factory():
+-        shutil.copytree(os.path.join(RESOURCES_DIR, 'catkin_pkgs', 'cmake_args'), 'src')
+-
+-        # cmake_args package requires all three vars to be set
+-        assert catkin_failure(
+-            BUILD +
+-            ['cmake_args', '--no-deps'] +
+-            ['--cmake-args', '-DVAR1=VAL1'])
+-
+-        assert catkin_failure(
+-            BUILD +
+-            ['cmake_args', '--no-deps'] +
+-            ['--cmake-args', '-DVAR1=VAL1', '-DVAR2=VAL2'])
+-
+-        assert catkin_success(
+-            BUILD +
+-            ['cmake_args', '--no-deps'] +
+-            ['--cmake-args', '-DVAR1=VAL1', '-DVAR2=VAL2', '-DVAR3=VAL3'])
+-
+-        assert catkin_success(
+-            BUILD +
+-            ['cmake_args', '--no-deps'] +
+-            ['--cmake-args', '-DVAR1=VAL1', '-DVAR2=VAL2', '-DVAR3=VAL3', '--'])
+-
+-
+-def test_no_cmake_args():
+-    """Test building when disabling CMake args in config"""
+-    pass  # TODO: Add test which sets cmake args with catkin config, then ignores them when building
+-
+-
+-def test_additional_cmake_args():
+-    """Test building when using additional CMake args to those config"""
+-    pass  # TODO: Add test which sets cmake args with catkin config, then adds more when building
+-
+-
+-def test_make_args():
+-    """Test passing arguments to the make command"""
+-    pass  # TODO: Implement this
+-
+-
+-def test_additional_make_args():
+-    """Test building when using additional make args to those config"""
+-    pass  # TODO: Add test which sets make args with catkin config, then adds more when building
+-
+-
+-def test_no_make_args():
+-    """Test building when disabling make args in config"""
+-    pass  # TODO: Add test which sets make args with catkin config, then ignores them when building
+-
+-
+-def test_catkin_make_args():
+-    """Test passing arguments to the make command for catkin packages only"""
+-    pass  # TODO: Implement this
+-
+-
+-def test_additional_catkin_make_args():
+-    """Test building when using additional catkin make args to those config"""
+-    pass  # TODO: Add test which sets catkin make args with catkin config, then adds more when building
+-
+-
+-def test_no_catkin_make_args():
+-    """Test building when disabling catkin make args in config"""
+-    pass  # TODO: Add test which sets catkin make args with catkin config, then ignores them when building
+-
+-
+-def test_jobs_args():
+-    """Test parallel jobs and parallel packages args"""
+-    pass  # TODO: Run catkin build, then check JobServer singleton
+diff --git a/tests/system/verbs/catkin_build/test_build.py b/tests/system/verbs/catkin_build/test_build.py
+deleted file mode 100644
+index 638105f..0000000
+--- a/tests/system/verbs/catkin_build/test_build.py
++++ /dev/null
+@@ -1,317 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-import re
+-import shutil
+-
+-from math import floor
+-
+-from ...workspace_factory import workspace_factory
+-
+-from ....utils import in_temporary_directory
+-from ....utils import assert_cmd_success
+-from ....utils import assert_cmd_failure
+-from ....utils import assert_files_exist
+-from ....utils import catkin_success
+-from ....utils import catkin_failure
+-from ....utils import redirected_stdio
+-
+-
+-from ....workspace_assertions import assert_workspace_initialized
+-from ....workspace_assertions import assert_no_warnings
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-BUILD = ['build', '--no-notify', '--no-status']
+-CLEAN = ['clean', '--yes']
+-
+-BUILD_TYPES = ['cmake', 'catkin']
+-
+-
+-def create_flat_workspace(wf, build_type, n_pkgs):
+-    """Create a bunch of packages with no interdependencies"""
+-    for i in range(n_pkgs):
+-        wf.create_package('pkg_{}'.format(i))
+-
+-
+-def create_chain_workspace(wf, build_type, n_pkgs):
+-    """Create a bunch of packages, each of which depends on one other in the
+-    workspace except for the root."""
+-    for i in range(n_pkgs):
+-        wf.create_package(
+-            'pkg_{}'.format(i),
+-            depends=(['pkg_{}'.format(i - 1)] if i > 0 else []))
+-
+-
+-def create_tree_workspace(wf, build_type, n_pkg_layers, n_children=2):
+-    """Create a bunch of packages which form a balanced dependency tree"""
+-    n_pkgs = pow(n_children, n_pkg_layers + 1) - 1
+-    for i in range(n_pkgs):
+-        wf.create_package(
+-            'pkg_{}'.format(i),
+-            depends=(['pkg_{}'.format(floor(i - 1) / n_children)] if i > 0 else []))
+-    return n_pkgs
+-
+-
+-@in_temporary_directory
+-def test_build_no_src():
+-    """Calling catkin build without a source space should fail."""
+-    assert catkin_failure(BUILD)
+-
+-
+-def test_build_auto_init_no_pkgs():
+-    """Test automatically initializing a workspace with no packages."""
+-    with redirected_stdio() as (out, err):
+-        with workspace_factory() as wf:
+-            wf.build()
+-            assert catkin_success(BUILD)
+-            assert_workspace_initialized('.')
+-    assert_no_warnings(out)
+-
+-
+-def test_build_auto_init_with_pkg():
+-    """Test automatically initializing a workspace."""
+-    with redirected_stdio() as (out, err):
+-        with workspace_factory() as wf:
+-            wf.create_package('pkg_a')
+-            wf.build()
+-            assert catkin_success(BUILD)
+-            assert_workspace_initialized('.')
+-    assert_no_warnings(out)
+-
+-
+-def test_build_dry_run():
+-    """Test showing the build jobs without doing anything."""
+-    with redirected_stdio() as (out, err):
+-        for build_type in BUILD_TYPES:
+-            with workspace_factory() as wf:
+-                create_tree_workspace(wf, build_type, 3)
+-                wf.build()
+-                assert catkin_success(BUILD + ['--dry-run'])
+-                assert not os.path.exists('build')
+-                assert not os.path.exists('devel')
+-
+-
+-def test_build_all_isolated():
+-    """Test building all packages in an isolated workspace"""
+-    pass  # TODO: Implement test
+-
+-
+-def test_build_all_merged():
+-    """Test building all packages in a merged workspace"""
+-    pass  # TODO: Implement test
+-
+-
+-def test_build_pkg():
+-    """Test building a package by name.
+-    """
+-    with redirected_stdio() as (out, err):
+-        for build_type in BUILD_TYPES:
+-            with workspace_factory() as wf:
+-                create_chain_workspace(wf, build_type, 4)
+-                wf.build()
+-                assert catkin_failure(BUILD + ['pkg_nil'])
+-                assert catkin_success(BUILD + ['pkg_2'])
+-                assert os.path.exists(os.path.join('build', 'pkg_0'))
+-                assert os.path.exists(os.path.join('build', 'pkg_1'))
+-                assert os.path.exists(os.path.join('build', 'pkg_2'))
+-                assert not os.path.exists(os.path.join('build', 'pkg_3'))
+-
+-
+-def test_build_no_deps():
+-    """Test building a package by name without deps."""
+-    with redirected_stdio() as (out, err):
+-        for build_type in BUILD_TYPES:
+-            with workspace_factory() as wf:
+-                create_chain_workspace(wf, build_type, 3)
+-                wf.build()
+-
+-                # --no-deps needs an argument
+-                assert catkin_failure(BUILD + ['--no-deps'])
+-                # only pkg_2 shuold be built
+-                assert catkin_success(BUILD + ['pkg_2', '--no-deps'])
+-                assert os.path.exists(os.path.join('build', 'pkg_2'))
+-                assert not os.path.exists(os.path.join('build', 'pkg_1'))
+-                assert not os.path.exists(os.path.join('build', 'pkg_0'))
+-
+-
+-def test_build_start_with():
+-    """Test building all packages starting with a specific one."""
+-    with redirected_stdio() as (out, err):
+-        for build_type in BUILD_TYPES:
+-            with workspace_factory() as wf:
+-                create_chain_workspace(wf, build_type, 4)
+-                wf.build()
+-
+-                # --start-with needs an argument
+-                assert catkin_failure(BUILD + ['--start-with'])
+-
+-                # --start-with needs a valid package
+-                assert catkin_failure(BUILD + ['--start-with', 'pkg_nil'])
+-
+-                # this should build all packages
+-                assert catkin_success(BUILD + ['--start-with', 'pkg_0'])
+-                for i in range(4):
+-                    assert os.path.exists(os.path.join('build', 'pkg_{}'.format(i)))
+-                assert catkin_success(CLEAN)
+-
+-                # this should skip pkg_2's deps
+-                assert catkin_success(BUILD + ['--start-with', 'pkg_2'])
+-                assert not os.path.exists(os.path.join('build', 'pkg_0'))
+-                assert not os.path.exists(os.path.join('build', 'pkg_1'))
+-                assert os.path.exists(os.path.join('build', 'pkg_2'))
+-                assert os.path.exists(os.path.join('build', 'pkg_3'))
+-                assert catkin_success(CLEAN)
+-
+-
+-def test_unbuilt_linked():
+-    """Test building packages which have yet to be built"""
+-    with redirected_stdio() as (out, err):
+-        for build_type in BUILD_TYPES:
+-            with workspace_factory() as wf:
+-                create_chain_workspace(wf, build_type, 2)
+-                wf.build()
+-
+-                # only pkg_0 shuold be built
+-                assert catkin_success(BUILD + ['pkg_0', '--no-deps'])
+-                # the rest should be built, but pkg_0 shouldn't be rebuilt
+-                assert os.path.exists(os.path.join('build', 'pkg_0'))
+-                assert not os.path.exists(os.path.join('build', 'pkg_1'))
+-
+-                pkg_0_log_path = os.path.join('logs', 'pkg_0')
+-
+-                # build the unbuilt packages (rebuild deps)
+-                pkg_0_log_files = os.listdir(pkg_0_log_path)
+-                assert catkin_success(BUILD + ['--unbuilt'])
+-                assert os.path.exists(os.path.join('build', 'pkg_0'))
+-                assert os.path.exists(os.path.join('build', 'pkg_1'))
+-                # make sure pkg_0 has been rebuilt
+-                assert pkg_0_log_files != os.listdir(pkg_0_log_path)
+-
+-                # build the unbuilt packages (don't rebuild deps)
+-                pkg_0_log_files = os.listdir(pkg_0_log_path)
+-                assert catkin_success(['clean', 'pkg_1'])
+-                assert catkin_success(BUILD + ['--unbuilt', '--no-deps'])
+-                assert os.path.exists(os.path.join('build', 'pkg_0'))
+-                assert os.path.exists(os.path.join('build', 'pkg_1'))
+-                # make sure pkg_0 hasn't been rebuilt
+-                assert pkg_0_log_files == os.listdir(pkg_0_log_path)
+-
+-
+-def test_unbuilt_isolated():
+-    """Test building unbuilt packages with an isolated develspace."""
+-    pass  # TODO: This should succeed, but isn't implemented for isolated develspaces
+-
+-
+-def test_unbuilt_merged():
+-    """Test building unbuilt packages with a merged develspace."""
+-    pass  # TODO: This should fail, but the check hsan't been tested
+-
+-
+-def test_continue_on_failure():
+-    """Test behavior when some packages fail to build."""
+-    pass  # TODO: Write test
+-
+-
+-def test_preclean():
+-    """Test pre-cleaning packages in a workspace."""
+-    pass  # TODO: Write test
+-
+-
+-def test_force_cmake():
+-    """Test forcing cmake to run on packages in a workspace."""
+-    pass  # TODO: Write test
+-
+-
+-def test_install():
+-    """Test building and installing catkin packages without DESTDIR"""
+-    with redirected_stdio() as (out, err):
+-        for build_type in BUILD_TYPES:
+-            with workspace_factory() as wf:
+-                create_chain_workspace(wf, build_type, 2)
+-                wf.build()
+-
+-                assert catkin_success(['config', '--install'])
+-                assert catkin_success(BUILD)
+-                assert os.path.exists(os.path.join('install'))
+-
+-
+-def test_install_cmake():
+-    """Test building and installing cmake packages without DESTDIR."""
+-    with redirected_stdio() as (out, err):
+-        with workspace_factory() as wf:
+-            print(os.getcwd)
+-            wf.build()
+-            shutil.copytree(
+-                os.path.join(RESOURCES_DIR, 'cmake_pkgs'),
+-                os.path.join('src/cmake_pkgs'))
+-
+-            assert catkin_success(['config', '--install'])
+-            assert catkin_success(BUILD)
+-            assert os.path.exists(os.path.join('install'))
+-
+-
+-def test_install_cmake_destdir():
+-    """Test building and installing cmake packages with DESTDIR."""
+-    with redirected_stdio() as (out, err):
+-        with workspace_factory() as wf:
+-            print(os.getcwd)
+-            wf.build()
+-            shutil.copytree(
+-                os.path.join(RESOURCES_DIR, 'cmake_pkgs'),
+-                os.path.join('src/cmake_pkgs'))
+-
+-            tmpinstall_path = os.path.join(os.getcwd(), 'tmpinstall')
+-            env = {'DESTDIR': tmpinstall_path}
+-
+-            assert catkin_success(['config', '--install', '--install-space', '/opt/foo'], env)
+-            assert catkin_success(BUILD, env)
+-            assert os.path.exists(tmpinstall_path)
+-            assert not os.path.exists(os.path.join('install'))
+-
+-
+-def test_install_catkin_destdir():
+-    """Test building and installing catkin packages with DESTDIR."""
+-    with redirected_stdio() as (out, err):
+-        with workspace_factory() as wf:
+-            print(os.getcwd)
+-            wf.build()
+-            shutil.copytree(
+-                os.path.join(RESOURCES_DIR, 'catkin_pkgs', 'products_0'),
+-                os.path.join('src', 'products_0'))
+-
+-            tmpinstall_path = os.path.join(os.getcwd(), 'tmpinstall')
+-            env = {'DESTDIR': tmpinstall_path}
+-            install_space = os.path.abspath(os.path.join('opt', 'foo'))
+-
+-            assert catkin_success(['config', '--install', '--install-space', install_space], env)
+-            assert catkin_success(BUILD, env)
+-            assert os.path.exists(tmpinstall_path)
+-            assert not os.path.exists(os.path.join('install'))
+-
+-            # check for _CATKIN_SETUP_DIR
+-            setup_sh_path = os.path.join(tmpinstall_path, install_space.lstrip(os.sep), 'setup.sh')
+-            print(setup_sh_path)
+-            assert os.path.exists(setup_sh_path)
+-            setup_dir_correct = False
+-            with open(setup_sh_path, "r") as setup_sh:
+-                for line in setup_sh:
+-                    if re.search('_CATKIN_SETUP_DIR:={}'.format(install_space), line):
+-                        setup_dir_correct = True
+-                        break
+-            assert setup_dir_correct is True
+-
+-
+-def test_pkg_with_unicode_names():
+-    """Test building a package with unicode file names."""
+-    with redirected_stdio() as (out, err):
+-        with workspace_factory() as wf:
+-            print(os.getcwd)
+-            wf.build()
+-            shutil.copytree(
+-                os.path.join(RESOURCES_DIR, 'catkin_pkgs', 'products_unicode'),
+-                os.path.join('src/cmake_pkgs'))
+-
+-            assert catkin_success(['config', '--link-devel'])
+-            assert catkin_success(BUILD)
+diff --git a/tests/system/verbs/catkin_build/test_bwlists.py b/tests/system/verbs/catkin_build/test_bwlists.py
+deleted file mode 100644
+index ea4e276..0000000
+--- a/tests/system/verbs/catkin_build/test_bwlists.py
++++ /dev/null
+@@ -1,24 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-BUILD = ['build', '--no-notify', '--no-status']
+-CLEAN = ['clean', '--all', '--yes']  # , '--no-notify', '--no-color', '--no-status']
+-
+-
+-def test_whitelist():
+-    """Test building whitelisted packages only"""
+-    pass  # TODO: Write test
+-
+-
+-def test_blacklist():
+-    """Test building all packages except blacklisted packages"""
+-    pass  # TODO: Write test
+-
+-
+-def test_blacklist_whitelist():
+-    """Test building with non-empty blacklist and whitelist"""
+-    pass  # TODO: Write test
+diff --git a/tests/system/verbs/catkin_build/test_context.py b/tests/system/verbs/catkin_build/test_context.py
+deleted file mode 100644
+index 740d36a..0000000
+--- a/tests/system/verbs/catkin_build/test_context.py
++++ /dev/null
+@@ -1,19 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-BUILD = ['build', '--no-notify', '--no-status']
+-CLEAN = ['clean', '--all', '--yes']  # , '--no-notify', '--no-color', '--no-status']
+-
+-
+-def test_build_this():
+-    """Test package context awareness"""
+-    pass  # TODO: Implement this (both negative and positive results)
+-
+-
+-def test_start_with_this():
+-    """Test package context awareness for --start-with option"""
+-    pass  # TODO: Implement this (both negative and positive results)
+diff --git a/tests/system/verbs/catkin_build/test_eclipse.py b/tests/system/verbs/catkin_build/test_eclipse.py
+deleted file mode 100644
+index c0f6a3e..0000000
+--- a/tests/system/verbs/catkin_build/test_eclipse.py
++++ /dev/null
+@@ -1,33 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-
+-from ....utils import in_temporary_directory
+-from ....utils import assert_files_exist
+-from ....utils import catkin_success
+-from ....utils import redirected_stdio
+-
+-
+-from ....workspace_assertions import assert_workspace_initialized
+-from ....workspace_assertions import assert_no_warnings
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-
+-@in_temporary_directory
+-def test_build_eclipse():
+-    cwd = os.getcwd()
+-    source_space = os.path.join(cwd, 'src')
+-    print("Creating source directory: %s" % source_space)
+-    os.mkdir(source_space)
+-    with redirected_stdio() as (out, err):
+-        assert catkin_success(
+-            ['create', 'pkg', '--rosdistro', 'hydro', '-p', source_space, 'pkg_a']), 'create pkg'
+-        assert catkin_success(
+-            ['build', '--no-notify', '--no-status', '--verbose',
+-             '--cmake-args', '-GEclipse CDT4 - Unix Makefiles'])
+-    assert_no_warnings(out)
+-    assert_workspace_initialized('.')
+-    assert_files_exist(os.path.join(cwd, 'build', 'pkg_a'),
+-                       ['.project', '.cproject'])
+diff --git a/tests/system/verbs/catkin_build/test_modify_ws.py b/tests/system/verbs/catkin_build/test_modify_ws.py
+deleted file mode 100644
+index 6168972..0000000
+--- a/tests/system/verbs/catkin_build/test_modify_ws.py
++++ /dev/null
+@@ -1,34 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-BUILD = ['build', '--no-notify', '--no-status']
+-CLEAN = ['clean', '--all', '--yes']  # , '--no-notify', '--no-color', '--no-status']
+-
+-
+-def test_add_package():
+-    """Test build behavior when adding packages to the workspace"""
+-    pass  # TODO: Implement this for various dependency relationships
+-
+-
+-def test_remove_package():
+-    """Test build behavior when removing packages from the workspace"""
+-    pass  # TODO: Implement this for various dependency relationships
+-
+-
+-def test_rename_package():
+-    """Test build behavior when renaming a package in the workspace"""
+-    pass  # TODO: Implement this for various dependency relationships
+-
+-
+-def test_ignore_package():
+-    """Test build behavior when adding a CATKIN_IGNORE file to a package in the workspace"""
+-    pass  # TODO: Implement this for various dependency relationships
+-
+-
+-def test_deblacklist():
+-    """Test build behavior when removing a package from the blacklist that has yet to be built"""
+-    pass  # TODO: Implement this for various dependency relationships
+diff --git a/tests/system/verbs/catkin_build/test_unicode_in_env.py b/tests/system/verbs/catkin_build/test_unicode_in_env.py
+deleted file mode 100644
+index 21570f3..0000000
+--- a/tests/system/verbs/catkin_build/test_unicode_in_env.py
++++ /dev/null
+@@ -1,20 +0,0 @@
+-import os
+-
+-from ....utils import catkin_success
+-
+-from ...workspace_factory import workspace_factory
+-
+-
+-def test_catkin_build_with_unicode_in_env():
+-    with workspace_factory() as wf:
+-        wf.create_package('foo', depends=['bar'])
+-        wf.create_package('bar')
+-        wf.build()
+-
+-        print('Workspace: {0}'.format(wf.workspace))
+-
+-        assert os.path.isdir(wf.workspace)
+-
+-        env = {'NON_ASCII': '\xc3\xb6'}
+-        cmd = ['build', '--no-status', '--no-notify', '--verbose']
+-        assert catkin_success(cmd, env)
+diff --git a/tests/system/verbs/catkin_build/test_unit_tests.py b/tests/system/verbs/catkin_build/test_unit_tests.py
+deleted file mode 100644
+index 33e8378..0000000
+--- a/tests/system/verbs/catkin_build/test_unit_tests.py
++++ /dev/null
+@@ -1,48 +0,0 @@
+-from __future__ import print_function
+-
+-import os
+-import shutil
+-
+-from ....utils import in_temporary_directory
+-from ....utils import assert_cmd_success
+-from ....utils import assert_cmd_failure
+-from ....utils import catkin_success
+-from ....utils import redirected_stdio
+-
+-TEST_DIR = os.path.dirname(__file__)
+-RESOURCES_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'resources')
+-
+-
+-@in_temporary_directory
+-def test_build_pkg_unit_tests():
+-    """Test running working unit tests"""
+-    cwd = os.getcwd()
+-    source_space = os.path.join(cwd, 'src')
+-    shutil.copytree(os.path.join(RESOURCES_DIR, 'catkin_pkgs', 'python_tests'), source_space)
+-    with redirected_stdio() as (out, err):
+-        assert catkin_success(
+-            ['build', '--no-notify', '--no-status', '--verbose', '--no-deps',
+-             'python_tests', '--make-args', 'run_tests'])
+-        assert_cmd_success(['catkin_test_results', 'build/python_tests'])
+-
+-        assert catkin_success(
+-            ['run_tests', 'python_tests', '--no-deps', '--no-notify', '--no-status'])
+-        assert_cmd_success(['catkin_test_results', 'build/python_tests'])
+-
+-
+-@in_temporary_directory
+-def test_build_pkg_unit_tests_broken():
+-    """Test running broken unit tests"""
+-    cwd = os.getcwd()
+-    source_space = os.path.join(cwd, 'src')
+-    shutil.copytree(os.path.join(RESOURCES_DIR, 'catkin_pkgs', 'python_tests_err'), source_space)
+-
+-    with redirected_stdio() as (out, err):
+-        assert catkin_success(
+-            ['build', '--no-notify', '--no-status', '--verbose', '--no-deps',
+-             'python_tests_err', '--make-args', 'run_tests'])
+-        assert_cmd_failure(['catkin_test_results', 'build/python_tests_err'])
+-
+-        assert catkin_success(
+-            ['run_tests', 'python_tests_err', '--no-deps', '--no-notify', '--no-status'])
+-        assert_cmd_failure(['catkin_test_results', 'build/python_tests_err'])
+diff --git a/tests/system/verbs/catkin_build/test_whitespace_in_paths.py b/tests/system/verbs/catkin_build/test_whitespace_in_paths.py
+deleted file mode 100644
+index 95f60ab..0000000
+--- a/tests/system/verbs/catkin_build/test_whitespace_in_paths.py
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import os
+-
+-from ....utils import catkin_success
+-
+-from ...workspace_factory import workspace_factory
+-
+-
+-def test_catkin_build_with_whitespace_in_paths():
+-    with workspace_factory(source_space='source packages') as wf:
+-        wf.create_package('foo', depends=['bar'])
+-        wf.create_package('bar')
+-        wf.build()
+-
+-        print('Workspace: {0}'.format(wf.workspace))
+-
+-        assert os.path.isdir(wf.workspace)
+-
+-        cmd = ['config', '--source', wf.source_space,
+-               '--devel', 'devel space',
+-               '--build', 'build space',
+-               '--install-space', 'install space']
+-        assert catkin_success(cmd), cmd
+-
+-        cmd = ['build', '--no-status', '--no-notify', '--verbose']
+-        assert catkin_success(cmd), cmd
+diff --git a/tests/system/verbs/catkin_config/__init__.py b/tests/system/verbs/catkin_config/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/verbs/catkin_config/test_config.py b/tests/system/verbs/catkin_config/test_config.py
+deleted file mode 100644
+index 98886c5..0000000
+--- a/tests/system/verbs/catkin_config/test_config.py
++++ /dev/null
+@@ -1,30 +0,0 @@
+-import os
+-
+-from ....utils import in_temporary_directory
+-from ....utils import assert_cmd_success
+-
+-from ....workspace_assertions import assert_workspace_initialized
+-from ....workspace_assertions import assert_warning_message
+-from ....workspace_assertions import assert_no_warnings
+-
+-
+-@in_temporary_directory
+-def test_config_no_ws():
+-    out = assert_cmd_success(['catkin', 'config'])
+-    assert_warning_message(out, 'Workspace .+ is not yet initialized')
+-
+-
+-@in_temporary_directory
+-def test_init_local_empty_src():
+-    cwd = os.getcwd()
+-    os.mkdir(os.path.join(cwd, 'src'))
+-    out = assert_cmd_success(['catkin', 'config', '--init'])
+-    assert_no_warnings(out)
+-    assert_workspace_initialized('.')
+-
+-
+-@in_temporary_directory
+-def test_config_non_bare():
+-    out = assert_cmd_success(['catkin', 'config', '--install'])
+-    assert_workspace_initialized('.')
+-    assert_warning_message(out, 'Source space .+ does not yet exist')
+diff --git a/tests/system/verbs/catkin_init/__init__.py b/tests/system/verbs/catkin_init/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/verbs/catkin_init/test_init.py b/tests/system/verbs/catkin_init/test_init.py
+deleted file mode 100644
+index 150de52..0000000
+--- a/tests/system/verbs/catkin_init/test_init.py
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import os
+-
+-from ....utils import in_temporary_directory
+-from ....utils import assert_cmd_success
+-
+-from ....workspace_assertions import assert_workspace_initialized
+-from ....workspace_assertions import assert_warning_message
+-from ....workspace_assertions import assert_no_warnings
+-
+-
+-@in_temporary_directory
+-def test_init_local_no_src():
+-    out = assert_cmd_success(['catkin', 'init'])
+-    assert_warning_message(out, 'Source space .+ does not yet exist')
+-    assert_workspace_initialized('.')
+-
+-
+-@in_temporary_directory
+-def test_init_local_empty_src():
+-    cwd = os.getcwd()
+-    os.mkdir(os.path.join(cwd, 'src'))
+-    out = assert_cmd_success(['catkin', 'init'])
+-    assert_no_warnings(out)
+-    assert_workspace_initialized('.')
+diff --git a/tests/system/verbs/catkin_profile/__init__.py b/tests/system/verbs/catkin_profile/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/system/verbs/catkin_profile/test_profile.py b/tests/system/verbs/catkin_profile/test_profile.py
+deleted file mode 100644
+index ea08c93..0000000
+--- a/tests/system/verbs/catkin_profile/test_profile.py
++++ /dev/null
+@@ -1,24 +0,0 @@
+-import os
+-
+-from ....utils import in_temporary_directory
+-from ....utils import assert_cmd_success
+-
+-from ....workspace_assertions import assert_workspace_initialized
+-from ....workspace_assertions import assert_warning_message
+-from ....workspace_assertions import assert_no_warnings
+-
+-
+-@in_temporary_directory
+-def test_profile_list():
+-    assert_cmd_success(['mkdir', 'src'])
+-    assert_cmd_success(['catkin', 'init'])
+-    assert_cmd_success(['catkin', 'build'])
+-    assert_cmd_success(['catkin', 'profile', 'list'])
+-
+-
+-@in_temporary_directory
+-def test_profile_set():
+-    assert_cmd_success(['mkdir', 'src'])
+-    assert_cmd_success(['catkin', 'init'])
+-    assert_cmd_success(['catkin', 'build'])
+-    assert_cmd_success(['catkin', 'profile', 'set', 'default'])
+diff --git a/tests/system/workspace_factory.py b/tests/system/workspace_factory.py
+deleted file mode 100644
+index 05d055a..0000000
+--- a/tests/system/workspace_factory.py
++++ /dev/null
+@@ -1,142 +0,0 @@
+-import os
+-import shutil
+-
+-from ..utils import temporary_directory
+-
+-
+-class workspace_factory(temporary_directory):
+-
+-    def __init__(self, source_space='src', prefix=''):
+-        super(workspace_factory, self).__init__(prefix=prefix)
+-        self.source_space = source_space
+-
+-    def __enter__(self):
+-        self.temporary_directory = super(workspace_factory, self).__enter__()
+-        self.workspace_factory = WorkspaceFactory(self.temporary_directory, self.source_space)
+-        return self.workspace_factory
+-
+-    def __exit__(self, exc_type, exc_value, traceback):
+-        super(workspace_factory, self).__exit__(exc_type, exc_value, traceback)
+-
+-
+-class WorkspaceFactory(object):
+-
+-    def __init__(self, workspace, source_space='src'):
+-        self.workspace = workspace
+-        self.source_space = os.path.join(self.workspace, source_space)
+-        self.packages = {}
+-
+-    class Package(object):
+-
+-        PACKAGE_XML_TEMPLATE = """\
+-<?xml version="1.0"?>
+-<package>
+-  <name>{name}</name>
+-  <version>0.0.0</version>
+-  <description>
+-    Description for {name}
+-  </description>
+-
+-  <maintainer email="person@email.com">Firstname Lastname</maintainer>
+-  <license>MIT</license>
+-
+-{depends_xml}
+-
+-{export_xml}
+-
+-</package>
+-"""
+-        PACKAGE_XML_EXPORT_TEMPLATE = """
+-  <export>
+-    <build_type>{build_type}</build_type>
+-  </export>"""
+-
+-        def __init__(self, name, build_type, depends, build_depends, run_depends, test_depends):
+-            self.name = name
+-            self.build_type = build_type
+-            self.build_depends = (build_depends or []) + (depends or [])
+-            self.run_depends = (run_depends or []) + (depends or [])
+-            self.test_depends = (test_depends or [])
+-
+-        def get_package_xml(self):
+-            # Get dependencies
+-            depends_xml = '\n'.join(
+-                ['  <build_depend>{0}</build_depend>'.format(x) for x in self.build_depends] +
+-                ['  <run_depend>{0}</run_depend>'.format(x) for x in self.run_depends] +
+-                ['  <test_depend>{0}</test_depend>'.format(x) for x in self.test_depends]
+-            )
+-
+-            # Get exports section
+-            if self.build_type == 'catkin':
+-                export_xml = ''
+-            else:
+-                export_xml = self.PACKAGE_XML_EXPORT_TEMPLATE.format(build_type=self.build_type)
+-
+-            # Format the package.xml template
+-            return self.PACKAGE_XML_TEMPLATE.format(
+-                name=self.name,
+-                depends_xml=depends_xml,
+-                export_xml=export_xml)
+-
+-        def get_cmakelists_txt(self):
+-            if self.build_type == 'catkin':
+-                cmakelists_txt = """\
+-cmake_minimum_required(VERSION 2.8.3)
+-project({name})
+-find_package(catkin REQUIRED)
+-catkin_package()
+-add_custom_target(install)"""
+-            elif self.build_type == 'cmake':
+-                cmakelists_txt = """\
+-cmake_minimum_required(VERSION 2.8.3)
+-project({name})
+-add_custom_target(install)"""
+-
+-            return cmakelists_txt.format(
+-                name=self.name,
+-                find_package=' '.join(self.build_depends))
+-
+-    def add_package(self, pkg_name, package_path):
+-        """Copy a static package into the workspace"""
+-        shutil.copytree(package_path, self.source_space)
+-
+-    def create_package(
+-        self,
+-        pkg_name,
+-        build_type='cmake',
+-        depends=None,
+-        build_depends=None,
+-        run_depends=None,
+-        test_depends=None
+-    ):
+-        """Add a package to be generated in this workspace."""
+-        self.packages[pkg_name] = self.Package(pkg_name, build_type, depends, build_depends, run_depends, test_depends)
+-
+-    def build(self):
+-        """Generate workspace paths and packages."""
+-        cwd = os.getcwd()
+-        if not os.path.isdir(self.workspace):
+-            if os.path.exists(self.workspace):
+-                raise RuntimeError("Cannot build workspace in '{0}' because it is a file".format(self.workspace))
+-            os.makedirs(self.workspace)
+-        if os.path.exists(self.source_space):
+-            print("WARNING: source space given to WorkspaceFactory exists, clearing before build()'ing")
+-            self.clear()
+-        os.makedirs(self.source_space)
+-        try:
+-            os.chdir(self.source_space)
+-            for name, pkg in self.packages.items():
+-                pkg_dir = os.path.join(self.source_space, name)
+-                os.makedirs(pkg_dir)
+-                pkg_xml_path = os.path.join(pkg_dir, 'package.xml')
+-                with open(pkg_xml_path, 'w') as f:
+-                    f.write(pkg.get_package_xml())
+-                cmakelists_txt_path = os.path.join(pkg_dir, 'CMakeLists.txt')
+-                with open(cmakelists_txt_path, 'w') as f:
+-                    f.write(pkg.get_cmakelists_txt())
+-        finally:
+-            os.chdir(cwd)
+-
+-    def clear(self):
+-        if os.path.exists(self.workspace):
+-            shutil.rmtree(self.workspace)
+diff --git a/tests/test_code_format.py b/tests/test_code_format.py
+deleted file mode 100644
+index 874f66e..0000000
+--- a/tests/test_code_format.py
++++ /dev/null
+@@ -1,16 +0,0 @@
+-import os
+-import subprocess
+-
+-
+-def test_flake8():
+-    """Test source code for pyFlakes and PEP8 conformance"""
+-    this_dir = os.path.dirname(os.path.abspath(__file__))
+-    source_dir = os.path.join(this_dir, '..', 'catkin_tools')
+-    cmd = ['flake8', source_dir, '--count', '--max-line-length=120']
+-    # work around for https://gitlab.com/pycqa/flake8/issues/179
+-    cmd.extend(['--jobs', '1'])
+-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+-    stdout, stderr = p.communicate()
+-    print(stdout)
+-    assert p.returncode == 0, \
+-        "Command '{0}' returned non-zero exit code '{1}'".format(' '.join(cmd), p.returncode)
+diff --git a/tests/unit/__init__.py b/tests/unit/__init__.py
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/unit/ascii_text.txt b/tests/unit/ascii_text.txt
+deleted file mode 100644
+index e55804a..0000000
+--- a/tests/unit/ascii_text.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-Hello ASCII!
+diff --git a/tests/unit/test_common.py b/tests/unit/test_common.py
+deleted file mode 100644
+index ab4737c..0000000
+--- a/tests/unit/test_common.py
++++ /dev/null
+@@ -1,49 +0,0 @@
+-import mock
+-
+-from catkin_tools import common
+-
+-
+-def test_get_recursive_build_depends_in_workspace_with_test_depend():
+-    pkg1 = mock.Mock()
+-    pkg1.name = 'pkg1'
+-    pkg1.build_depends = []
+-    pkg1.buildtool_depends = []
+-    pkg1.test_depends = []
+-    pkg1.run_depends = []
+-    pkg1.exec_depends = []
+-    pkg1.build_export_depends = []
+-
+-    pkg2 = mock.Mock()
+-    pkg2.name = 'pkg2'
+-    pkg2.build_depends = []
+-    pkg2.buildtool_depends = []
+-    pkg2.test_depends = []
+-    pkg2.run_depends = []
+-    pkg2.exec_depends = []
+-    pkg2.build_export_depends = []
+-
+-    pkg1.test_depends.append(pkg2)
+-
+-    ordered_packages = [
+-        ('/path/to/pkg1', pkg1),
+-        ('/path/to/pkg2', pkg2),
+-    ]
+-
+-    r = common.get_recursive_build_depends_in_workspace(pkg1, ordered_packages)
+-    assert r == ordered_packages[1:], r
+-
+-
+-def test_format_time_delta_short():
+-    inputs = {
+-        1.45: "1.4",
+-        61.45: "01:01.4",
+-        121.45: "02:01.4",
+-        # this one tests: https://github.com/catkin/catkin_tools/issues/356
+-        3601.45: "1:00:01.4",
+-        3721.45: "1:02:01.4",
+-        7321.45: "2:02:01.4",
+-        93821.45: "1 day 2:03:41.5",
+-    }
+-    for k, v in inputs.items():
+-        f = common.format_time_delta_short(k)
+-        assert f == v, "format_time_delta_short({0}) -> '{1}' != '{2}'".format(k, f, v)
+diff --git a/tests/unit/test_config.py b/tests/unit/test_config.py
+deleted file mode 100644
+index c482357..0000000
+--- a/tests/unit/test_config.py
++++ /dev/null
+@@ -1,120 +0,0 @@
+-import os
+-import shutil
+-import mock
+-
+-from catkin_tools import config
+-
+-from nose.tools import assert_raises_regexp
+-from ..utils import in_temporary_directory
+-from ..utils import redirected_stdio
+-
+-
+-@mock.patch('catkin_tools.config.initialize_verb_aliases')
+-@in_temporary_directory
+-def test_config_initialization(patched_func):
+-    cwd = os.getcwd()
+-    test_folder = os.path.join(cwd, 'test')
+-    # Test normal case
+-    config.initialize_config(test_folder)
+-    assert os.path.isdir(test_folder)
+-    assert not os.path.exists(os.path.join(test_folder, 'verb_aliases'))
+-    # Assert a second invocation is fine
+-    config.initialize_config(test_folder)
+-    shutil.rmtree(test_folder)
+-    # Test failure with file for target config path
+-    with open(test_folder, 'w') as f:
+-        f.write('this will cause a RuntimeError')
+-    with assert_raises_regexp(RuntimeError, "The catkin config directory"):
+-        config.initialize_config(test_folder)
+-
+-
+-@in_temporary_directory
+-def test_verb_alias_config_initialization():
+-    cwd = os.getcwd()
+-    test_folder = os.path.join(cwd, 'test')
+-    # Test target directory does not exist failure
+-    with assert_raises_regexp(RuntimeError, "Cannot initialize verb aliases because catkin configuration path"):
+-        config.initialize_verb_aliases(test_folder)
+-    # Test normal case
+-    os.makedirs(test_folder)
+-    config.initialize_verb_aliases(test_folder)
+-    assert os.path.isdir(test_folder)
+-    assert os.path.isdir(os.path.join(test_folder, 'verb_aliases'))
+-    defaults_path = os.path.join(test_folder, 'verb_aliases', '00-default-aliases.yaml')
+-    assert os.path.isfile(defaults_path)
+-    # Assert a second invocation is fine
+-    config.initialize_verb_aliases(test_folder)
+-    # Check that replacement of defaults works
+-    with open(defaults_path, 'w') as f:
+-        f.write("This should be overwritten (simulation of update needed)")
+-    with redirected_stdio() as (out, err):
+-        config.initialize_verb_aliases(test_folder)
+-    assert "Warning, builtin verb aliases at" in out.getvalue(), out.getvalue()
+-    shutil.rmtree(test_folder)
+-    # Check failure from verb aliases folder existing as a file
+-    os.makedirs(test_folder)
+-    with open(os.path.join(test_folder, 'verb_aliases'), 'w') as f:
+-        f.write("this will cause a RuntimeError")
+-    with assert_raises_regexp(RuntimeError, "The catkin verb aliases config directory"):
+-        config.initialize_verb_aliases(test_folder)
+-    shutil.rmtree(test_folder)
+-
+-
+-@in_temporary_directory
+-def test_get_verb_aliases():
+-    cwd = os.getcwd()
+-    test_folder = os.path.join(cwd, 'test')
+-    # Test failure case where config folder does not exist
+-    with assert_raises_regexp(RuntimeError, "Cannot get verb aliases because the catkin config path"):
+-        config.get_verb_aliases(test_folder)
+-    # Test failure case where aliases folder does not exist
+-    with mock.patch('catkin_tools.config.initialize_verb_aliases'):
+-        config.initialize_config(test_folder)
+-    with assert_raises_regexp(RuntimeError, "Cannot get verb aliases because the verb aliases config path"):
+-        config.get_verb_aliases(test_folder)
+-    shutil.rmtree(test_folder)
+-    # Test the normal case
+-    config.initialize_config(test_folder)
+-    aliases = config.get_verb_aliases(test_folder)
+-    assert 'b' in aliases
+-    assert aliases['b'] == 'build'
+-    # Test a custom file
+-    base_path = os.path.join(test_folder, 'verb_aliases')
+-    with open(os.path.join(base_path, '01-my-custom-aliases.yaml'), 'w') as f:
+-        f.write("""\
+-b: build --isolate-devel
+-ls: null
+-""")
+-    aliases = config.get_verb_aliases(test_folder)
+-    assert 'b' in aliases
+-    assert aliases['b'] == 'build --isolate-devel', aliases['b']
+-    assert 'ls' not in aliases
+-    # Test a bad alias files
+-    bad_path = os.path.join(base_path, '02-bad.yaml')
+-    with open(bad_path, 'w') as f:
+-        f.write("""\
+-- foo
+-- bar
+-""")
+-    with assert_raises_regexp(RuntimeError, "Invalid alias file"):
+-        config.get_verb_aliases(test_folder)
+-    os.remove(bad_path)
+-    with open(bad_path, 'w') as f:
+-        f.write("""\
+-null: foo
+-""")
+-    with assert_raises_regexp(RuntimeError, "Invalid alias in file"):
+-        config.get_verb_aliases(test_folder)
+-    os.remove(bad_path)
+-    with open(bad_path, 'w') as f:
+-        f.write("""\
+-foo: 13.4
+-""")
+-    with assert_raises_regexp(RuntimeError, "Invalid alias expansion in file"):
+-        config.get_verb_aliases(test_folder)
+-    os.remove(bad_path)
+-    # Test with an empty custom file
+-    empty_path = os.path.join(base_path, '02-my-empty.yaml')
+-    with open(empty_path, 'a') as f:
+-        os.utime(empty_path, None)
+-    aliases = config.get_verb_aliases(test_folder)
+diff --git a/tests/unit/unicode_text.txt b/tests/unit/unicode_text.txt
+deleted file mode 100644
+index 7f09919..0000000
+--- a/tests/unit/unicode_text.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-Hello Unicode‽
+diff --git a/tests/utils.py b/tests/utils.py
+deleted file mode 100644
+index ab9080f..0000000
+--- a/tests/utils.py
++++ /dev/null
+@@ -1,192 +0,0 @@
+-from __future__ import print_function
+-
+-import functools
+-import os
+-import re
+-import shutil
+-import sys
+-import tempfile
+-
+-import subprocess
+-
+-from catkin_tools.commands.catkin import main as catkin_main
+-
+-try:
+-    # Python2
+-    from StringIO import StringIO
+-except ImportError:
+-    # Python3
+-    from io import StringIO
+-
+-try:
+-    from subprocess import TimeoutExpired
+-except ImportError:
+-    class TimeoutExpired(object):
+-        pass
+-
+-TESTS_DIR = os.path.dirname(__file__)
+-MOCK_DIR = os.path.join(TESTS_DIR, 'mock_resources')
+-
+-
+-def catkin_success(args, env={}):
+-    orig_environ = dict(os.environ)
+-    try:
+-        os.environ.update(env)
+-        catkin_main(args)
+-    except SystemExit as exc:
+-        ret = exc.code
+-        if ret != 0:
+-            import traceback
+-            traceback.print_exc()
+-    finally:
+-        os.environ = orig_environ
+-    return ret == 0
+-
+-
+-def catkin_failure(args, env={}):
+-    orig_environ = dict(os.environ)
+-    try:
+-        os.environ.update(env)
+-        catkin_main(args)
+-    except SystemExit as exc:
+-        ret = exc.code
+-    finally:
+-        os.environ = orig_environ
+-    return ret != 0
+-
+-
+-class AssertRaisesContext(object):
+-
+-    def __init__(self, expected, expected_regex=None):
+-        self.expected = expected
+-        self.expected_regex = expected_regex
+-
+-    def __enter__(self):
+-        return self
+-
+-    def __exit__(self, exc_type, exc_value, tb):
+-        if self.expected is None:
+-            if exc_type is None:
+-                return True
+-            else:
+-                raise
+-        if exc_type is None:
+-            try:
+-                exc_name = self.expected.__name__
+-            except AttributeError:
+-                exc_name = str(self.expected)
+-            raise AssertionError("{0} not raised".format(exc_name))
+-        if not issubclass(exc_type, self.expected):
+-            raise
+-        if self.expected_regex is None:
+-            return True
+-        expected_regex = self.expected_regex
+-        expected_regex = re.compile(expected_regex)
+-        if not expected_regex.search(str(exc_value)):
+-            raise AssertionError("'{0}' does not match '{1}'".format(expected_regex.pattern, str(exc_value)))
+-        return True
+-
+-
+-class redirected_stdio(object):
+-
+-    def __enter__(self):
+-        self.original_stdout = sys.stdout
+-        self.original_stderr = sys.stderr
+-        self.out = StringIO()
+-        self.err = StringIO()
+-        sys.stdout = self.out
+-        sys.stderr = self.err
+-        return self.out, self.err
+-
+-    def __exit__(self, exc_type, exc_value, traceback):
+-        sys.stdout = self.original_stdout
+-        sys.stderr = self.original_stderr
+-
+-        print(self.out.getvalue())
+-
+-
+-class temporary_directory(object):
+-
+-    def __init__(self, prefix=''):
+-        self.prefix = prefix
+-        self.delete = False
+-
+-    def __enter__(self):
+-        self.original_cwd = os.getcwd()
+-        self.temp_path = tempfile.mkdtemp(prefix=self.prefix)
+-        os.chdir(self.temp_path)
+-        return self.temp_path
+-
+-    def __exit__(self, exc_type, exc_value, traceback):
+-        if self.delete and self.temp_path and os.path.exists(self.temp_path):
+-            print('Deleting temporary testind directory: %s' % self.temp_path)
+-            shutil.rmtree(self.temp_path)
+-        if self.original_cwd and os.path.exists(self.original_cwd):
+-            os.chdir(self.original_cwd)
+-
+-
+-def in_temporary_directory(f):
+-    @functools.wraps(f)
+-    def decorated(*args, **kwds):
+-        with temporary_directory() as directory:
+-            from inspect import getargspec
+-            # If it takes directory of kwargs and kwds does already have
+-            # directory, inject it
+-            if 'directory' not in kwds and 'directory' in getargspec(f)[0]:
+-                kwds['directory'] = directory
+-            return f(*args, **kwds)
+-    decorated.__name__ = f.__name__
+-    return decorated
+-
+-
+-def run(args, **kwargs):
+-    """
+-    Call to Popen, returns (errcode, stdout, stderr)
+-    """
+-    print("run:", args)
+-    p = subprocess.Popen(
+-        args,
+-        stdout=subprocess.PIPE,
+-        stderr=subprocess.STDOUT,
+-        universal_newlines=True,
+-        cwd=kwargs.get('cwd', os.getcwd()))
+-    print("P==", p.__dict__)
+-    (stdout, stderr) = p.communicate()
+-
+-    return (p.returncode, stdout, stderr)
+-
+-
+-def assert_cmd_success(cmd, **kwargs):
+-    """
+-    Asserts that running a command returns zero.
+-
+-    returns: stdout
+-    """
+-    print(">>>", cmd, kwargs)
+-    (r, out, err) = run(cmd, **kwargs)
+-    print("<<<", str(out))
+-    assert r == 0, "cmd failed with result %s:\n %s " % (r, str(cmd))
+-    return out
+-
+-
+-def assert_cmd_failure(cmd, **kwargs):
+-    """
+-    Asserts that running a command returns non-zero.
+-
+-    returns: stdout
+-    """
+-    print(">>>", cmd, kwargs)
+-    (r, out, err) = run(cmd, withexitstatus=True, **kwargs)
+-    print("<<<", str(out))
+-    assert 0 != r, "cmd succeeded, but it should fail: %s result=%u\noutput=\n%s" % (cmd, r, out)
+-    return out
+-
+-
+-def assert_files_exist(prefix, files):
+-    """
+-    Assert that all files exist in the prefix.
+-    """
+-    for f in files:
+-        p = os.path.join(prefix, f)
+-        print("Checking for", p)
+-        assert os.path.exists(p), "%s doesn't exist" % p
+diff --git a/tests/workspace_assertions.py b/tests/workspace_assertions.py
+deleted file mode 100644
+index 2ae912f..0000000
+--- a/tests/workspace_assertions.py
++++ /dev/null
+@@ -1,33 +0,0 @@
+-from __future__ import print_function
+-
+-import re
+-
+-from .utils import assert_files_exist
+-
+-
+-def assert_workspace_initialized(path):
+-    assert_files_exist(path, ['.catkin_tools'])
+-
+-
+-def assert_warning_message(out_str, pattern=''):
+-    """
+-    Assert that the stdout returned from a call contains a catkin_tools
+-    warning.
+-    """
+-    out_str_stripped = ' '.join(str(out_str).splitlines())
+-    found = re.findall('WARNING:', out_str_stripped)
+-    assert len(found) > 0
+-
+-    if pattern:
+-        found = re.findall(pattern, out_str_stripped)
+-        assert len(found) > 0
+-
+-
+-def assert_no_warnings(out_str):
+-    """
+-    Assert that the stdout returned from a call contains a catkin_tools
+-    warning.
+-    """
+-    out_str_stripped = ' '.join(str(out_str).splitlines())
+-    found = re.findall('WARNING:', out_str_stripped)
+-    assert len(found) == 0
